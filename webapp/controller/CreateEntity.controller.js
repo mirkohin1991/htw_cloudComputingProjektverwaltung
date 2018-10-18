@@ -65,19 +65,50 @@ sap.ui.define([
 				);
 				return;
 			}
-			this.getModel("appView").setProperty("/busy", true);
-			if (this._oViewModel.getProperty("/mode") === "edit") {
+		//	this.getModel("appView").setProperty("/busy", true);
+		//	if (this._oViewModel.getProperty("/mode") === "edit") {
 				// attach to the request completed event of the batch
-				oModel.attachEventOnce("batchRequestCompleted", function (oEvent) {
-					if (that._checkIfBatchRequestSucceeded(oEvent)) {
-						that._fnUpdateSuccess();
-					} else {
-						that._fnEntityCreationFailed();
-						MessageBox.error(that._oResourceBundle.getText("updateError"));
-					}
-				});
-			}
-			oModel.submitChanges();
+		//		oModel.attachEventOnce("batchRequestCompleted", function (oEvent) {
+		//			if (that._checkIfBatchRequestSucceeded(oEvent)) {
+		//				that._fnUpdateSuccess();
+		//			} else {
+		//				that._fnEntityCreationFailed();
+		//				MessageBox.error(that._oResourceBundle.getText("updateError"));
+		//			}
+		//		});
+		//	}
+		//	oModel.submitChanges();
+
+
+ var oModel2 = new sap.ui.model.odata.ODataModel("/S4HC/sap/opu/odata/cpd/SC_PROJ_ENGMT_CREATE_UPD_SRV/", true);
+
+var oData3 = {
+  "ProjectCategory": "C",
+  "OrgID": "1010",
+  "CostCenter": "0010101902",
+  "ProfitCenter": "YB101",
+  "Customer": "10100002",
+  "Currency": "EUR",
+  "ProjectID": "API3",
+  "ProjectName": "ProjectAPI3",
+  "ProjectStage": "P001",
+  "ProjManagerExtId": "D063538",
+  "StartDate": "2018-04-29T00:00:00.0000000",
+  "EndDate": "2018-05-29T00:00:00.0000000"
+    };
+ 
+
+
+oModel2.create("/ProjectSet", oData3, {
+  success: function(oCreatedEntry) {
+  },
+  error: function(oError) { /* do something */ }
+});	   
+
+
+oModel.refresh();
+
+
 		},
 
 		_checkIfBatchRequestSucceeded: function (oEvent) {

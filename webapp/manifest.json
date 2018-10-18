@@ -48,10 +48,7 @@
 			"tablet": true,
 			"phone": true
 		},
-		"supportedThemes": [
-			"sap_hcb",
-			"sap_belize"
-		]
+		"supportedThemes": ["sap_hcb", "sap_belize"]
 	},
 	"sap.ui5": {
 		"rootView": {
@@ -103,38 +100,23 @@
 				"controlId": "idAppControl",
 				"controlAggregation": "detailPages",
 				"bypassed": {
-					"target": [
-						"master",
-						"notFound"
-					]
+					"target": ["master", "notFound"]
 				},
 				"async": true
 			},
-			"routes": [
-				{
-					"pattern": "",
-					"name": "master",
-					"target": [
-						"object",
-						"master"
-					]
-				},
-				{
-					"pattern": "ProjectSet/{ProjectID}",
-					"name": "object",
-					"target": [
-						"master",
-						"object"
-					]
-				},
-				{
-					"name": "CreateEntity",
-					"pattern": "CreateEntity",
-					"target": [
-						"create"
-					]
-				}
-			],
+			"routes": [{
+				"pattern": "",
+				"name": "master",
+				"target": ["object", "master"]
+			}, {
+				"pattern": "ProjectSet/{ProjectID}",
+				"name": "object",
+				"target": ["master", "object"]
+			}, {
+				"name": "CreateEntity",
+				"pattern": "CreateEntity",
+				"target": ["create"]
+			}],
 			"targets": {
 				"master": {
 					"viewName": "Master",
