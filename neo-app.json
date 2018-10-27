@@ -1,4 +1,5 @@
 {
+ "headerWhiteList": [ "apikey" ],
   "routes": [
     {
       "path": "/webapp/resources",
@@ -43,7 +44,15 @@
         "name": "S4HC"
       },
       "description": "S4HC"
+    },
+    { "path": "/mlServices",
+      "target": {
+        "type": "destination",
+        "name": "mlServices"
+      },
+      "description": "mlServices"
     }
+   
   ],
   "welcomeFile": "/webapp/test/flpSandbox.html",
   "sendWelcomeFileRedirect": true

@@ -82,10 +82,8 @@ sap.ui.define([
 
 			//	var ProjManagerExtId_id = sap.ui.getCore().byId("__xmlview0--ProjManagerExtId_id").getProperty("value");
 
-			var oModel2 = new sap.ui.model.odata.ODataModel("/S4HC/sap/opu/odata/cpd/SC_PROJ_ENGMT_CREATE_UPD_SRV/", true);
-
-			var oData3 = {
-				"ProjectCategory": "C",
+			//SAMPLE DATA
+			/*	"ProjectCategory": "C",
 				"OrgID": "1010",
 				"CostCenter": "0010101902",
 				"ProfitCenter": "YB101",
@@ -97,36 +95,118 @@ sap.ui.define([
 				"ProjManagerExtId": "D063538",
 				"StartDate": "2018-04-29T00:00:00.0000000",
 				"EndDate": "2018-05-29T00:00:00.0000000"
-			};
-			
-			var dateFrom = sap.ui.getCore().byId("__xmlview0--StartDate_id").getProperty("value");
-			var dateFromISO = new Date(dateFrom).toISOString();
-			var dateFromShort = dateFromISO.split(".")[0];
-			var dateTo = sap.ui.getCore().byId("__xmlview0--EndDate_id").getProperty("value");
-			var dateToISO = new Date(dateTo).toISOString();
-			var dateToShort = dateToISO.split(".")[0];
+			*/
 
-			var oData4 = {
-				"ProjectCategory": sap.ui.getCore().byId("__xmlview0--ProjectCategory_id").getProperty("value"),
-				"OrgID": sap.ui.getCore().byId("__xmlview0--OrgID_id").getProperty("value"),
-				"CostCenter": sap.ui.getCore().byId("__xmlview0--CostCenter_id").getProperty("value"),
-				"ProfitCenter": sap.ui.getCore().byId("__xmlview0--ProfitCenter_id").getProperty("value"),
-				"Customer": sap.ui.getCore().byId("__xmlview0--Customer_id").getProperty("value"),
-				"Currency": sap.ui.getCore().byId("__xmlview0--Currency_id").getProperty("value"),
-				"ProjectID": sap.ui.getCore().byId("__xmlview0--ProjectID_id").getProperty("value"),
-				"ProjectName": sap.ui.getCore().byId("__xmlview0--ProjectName_id").getProperty("value"),
-				"ProjectStage": sap.ui.getCore().byId("__xmlview0--ProjectStage_id").getProperty("value"),
-				"ProjManagerExtId": sap.ui.getCore().byId("__xmlview0--ProjManagerExtId_id").getProperty("value"),
-				"StartDate": dateFromShort,
-				"EndDate": dateToShort
-			};
+			//	var url = "https://sandbox.api.sap.com/ml/translation/translation";
 
-			oModel2.create("/ProjectSet", oData4, {
-				success: function (oCreatedEntry) {},
-				error: function (oError) { /* do something */ }
+			/**					var settings = {
+									"async": true,
+									"crossDomain": true,
+									"url": "/mlTranslationService/translation",
+									"method": "POST",
+									"headers": {
+										"apikey": "bIz3xKOCcyoGpHucikNb5kr1CvWT7Bvh",
+										"content-type": "application/json",
+										"cache-control": "no-cache"
+							//			"postman-token": "4b3e7d86-f357-6269-3c1b-171d4a589e42"
+									},
+									"processData": false,
+									"data": "{\n  \"sourceLanguage\": \"de\",\n  \"targetLanguages\": [\n    \"en\"\n  ],\n  \"units\": [\n    {\n      \"value\": \"Projekt für Finanzbuchhaltung\",\n      \"key\": \"ANALYZE_SALES_DATA\"\n    }\n  ]\n}"
+								};
+
+								$.ajax(settings).done(function (response) {
+									sap.m.MessageToast.show(response.units[0].translations[0].value) ;
+								});
+				**/
+
+			var bodyLngDet = JSON.stringify({
+				"message": sap.ui.getCore().byId("__xmlview0--ProjectName_id").getProperty("value")
 			});
 
-			oModel.refresh();
+			var xhr = new XMLHttpRequest();
+			xhr.withCredentials = true;
+
+			xhr.addEventListener("readystatechange", function () {
+				if (this.readyState === 4) {
+					var langCode = JSON.parse(this.responseText).langCode;
+					sap.m.MessageToast.show(langCode);
+
+					var data = JSON.stringify({
+						"sourceLanguage": langCode,
+						"targetLanguages": [
+							"en"
+						],
+						"units": [{
+							"value": sap.ui.getCore().byId("__xmlview0--ProjectName_id").getProperty("value"),
+							"key": "ANALYZE_SALES_DATA"
+						}]
+					});
+
+					xhr = new XMLHttpRequest();
+					xhr.withCredentials = true;
+
+					xhr.addEventListener("readystatechange", function () {
+						if (this.readyState === 4) {
+							var translatedText = JSON.parse(this.responseText).units[0].translations[0].value;
+							sap.m.MessageToast.show(translatedText);
+							// console.log(this.responseText);
+
+							var oModelNew = new sap.ui.model.odata.ODataModel("/S4HC/sap/opu/odata/cpd/SC_PROJ_ENGMT_CREATE_UPD_SRV/", true);
+							var dateFrom = sap.ui.getCore().byId("__xmlview0--StartDate_id").getProperty("value");
+							var dateFromISO = new Date(dateFrom).toISOString();
+							var dateFromShort = dateFromISO.split(".")[0];
+							var dateTo = sap.ui.getCore().byId("__xmlview0--EndDate_id").getProperty("value");
+							var dateToISO = new Date(dateTo).toISOString();
+							var dateToShort = dateToISO.split(".")[0];
+
+							var ODataNew = {
+								"ProjectCategory": sap.ui.getCore().byId("__xmlview0--ProjectCategory_id").getProperty("value"),
+								"OrgID": sap.ui.getCore().byId("__xmlview0--OrgID_id").getProperty("value"),
+								"CostCenter": sap.ui.getCore().byId("__xmlview0--CostCenter_id").getProperty("value"),
+								"ProfitCenter": sap.ui.getCore().byId("__xmlview0--ProfitCenter_id").getProperty("value"),
+								"Customer": sap.ui.getCore().byId("__xmlview0--Customer_id").getProperty("value"),
+								"Currency": sap.ui.getCore().byId("__xmlview0--Currency_id").getProperty("value"),
+								"ProjectID": sap.ui.getCore().byId("__xmlview0--ProjectID_id").getProperty("value"),
+								"ProjectName": translatedText,
+								"ProjectStage": sap.ui.getCore().byId("__xmlview0--ProjectStage_id").getProperty("value"),
+								"ProjManagerExtId": sap.ui.getCore().byId("__xmlview0--ProjManagerExtId_id").getProperty("value"),
+								"StartDate": dateFromShort,
+								"EndDate": dateToShort
+							};
+
+							oModelNew.create("/ProjectSet", ODataNew, {
+								success: function (oCreatedEntry) {
+									sap.m.MessageToast.show("Creation successful");
+								},
+								error: function (oError) {
+									sap.m.MessageBox.show(JSON.parse(oError.response.body).error.message.value);
+									/* do something */
+								}
+							});
+
+							//Does not work!
+							oModel.refresh();
+						}
+					});
+
+					xhr.open("POST", "/mlServices/translation/translation");
+					xhr.setRequestHeader("Content-Type", "application/json");
+					xhr.setRequestHeader("apikey", "ADwoLzuKGr0tLpz1OIsPKhTqSEwEccfc");
+					//	xhr.setRequestHeader("cache-control", "no-cache");
+					//	xhr.setRequestHeader("Postman-Token", "685d3dc8-e09e-4e2b-9b97-136ffe18d3cf");
+
+					xhr.send(data);
+
+				}
+			});
+
+			xhr.open("POST", "/mlServices/languagedetection/language");
+			xhr.setRequestHeader("Content-Type", "application/json");
+			xhr.setRequestHeader("apikey", "ADwoLzuKGr0tLpz1OIsPKhTqSEwEccfc");
+			//	xhr.setRequestHeader("cache-control", "no-cache");
+			//	xhr.setRequestHeader("Postman-Token", "685d3dc8-e09e-4e2b-9b97-136ffe18d3cf");
+
+			xhr.send(bodyLngDet);
 
 		},
 
