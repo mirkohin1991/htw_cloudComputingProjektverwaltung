@@ -65,9 +65,10 @@ sap.ui.define([
 				);
 				return;
 			}
+			
 		//	this.getModel("appView").setProperty("/busy", true);
 		//	if (this._oViewModel.getProperty("/mode") === "edit") {
-				// attach to the request completed event of the batch
+		//		// attach to the request completed event of the batch
 		//		oModel.attachEventOnce("batchRequestCompleted", function (oEvent) {
 		//			if (that._checkIfBatchRequestSucceeded(oEvent)) {
 		//				that._fnUpdateSuccess();
@@ -78,7 +79,12 @@ sap.ui.define([
 		//		});
 		//	}
 		//	oModel.submitChanges();
-
+			
+		
+	//	var ProjManagerExtId_id = sap.ui.getCore().byId("__xmlview0--ProjManagerExtId_id").getProperty("value");
+			
+			
+	
 
  var oModel2 = new sap.ui.model.odata.ODataModel("/S4HC/sap/opu/odata/cpd/SC_PROJ_ENGMT_CREATE_UPD_SRV/", true);
 
@@ -96,10 +102,28 @@ var oData3 = {
   "StartDate": "2018-04-29T00:00:00.0000000",
   "EndDate": "2018-05-29T00:00:00.0000000"
     };
+    
+ var oData4 = {
+  "ProjectCategory": sap.ui.getCore().byId("__xmlview0--ProjectCategory_id").getProperty("value"),
+  "OrgID": sap.ui.getCore().byId("__xmlview0--OrgID_id").getProperty("value"),
+  "CostCenter": sap.ui.getCore().byId("__xmlview0--CostCenter_id").getProperty("value"),
+  "ProfitCenter": sap.ui.getCore().byId("__xmlview0--ProfitCenter_id").getProperty("value"),
+  "Customer": sap.ui.getCore().byId("__xmlview0--Customer_id").getProperty("value"),
+  "Currency": sap.ui.getCore().byId("__xmlview0--Currency_id").getProperty("value"),
+  "ProjectID": sap.ui.getCore().byId("__xmlview0--ProjectID_id").getProperty("value"),
+  "ProjectName": sap.ui.getCore().byId("__xmlview0--ProjectName_id").getProperty("value"),
+  "ProjectStage": sap.ui.getCore().byId("__xmlview0--ProjectStage_id").getProperty("value"),
+  "ProjManagerExtId": sap.ui.getCore().byId("__xmlview0--ProjManagerExtId_id").getProperty("value"),
+  "StartDate": sap.ui.getCore().byId("__xmlview0--StartDate_id").getProperty("value"),
+  "EndDate": sap.ui.getCore().byId("__xmlview0--EndDate_id").getProperty("value")
+    };
+       
+    
+    sap.ui.getCore().byId("__xmlview0--ProjManagerExtId_id").getProperty("value");
  
 
 
-oModel2.create("/ProjectSet", oData3, {
+oModel2.create("/ProjectSet", oData4, {
   success: function(oCreatedEntry) {
   },
   error: function(oError) { /* do something */ }
@@ -107,7 +131,9 @@ oModel2.create("/ProjectSet", oData3, {
 
 
 oModel.refresh();
+oModel.updateBindings();
 
+this.onInit();
 
 		},
 
