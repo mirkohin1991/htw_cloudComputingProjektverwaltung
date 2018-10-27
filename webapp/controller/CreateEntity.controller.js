@@ -65,75 +65,61 @@ sap.ui.define([
 				);
 				return;
 			}
-			
-		//	this.getModel("appView").setProperty("/busy", true);
-		//	if (this._oViewModel.getProperty("/mode") === "edit") {
-		//		// attach to the request completed event of the batch
-		//		oModel.attachEventOnce("batchRequestCompleted", function (oEvent) {
-		//			if (that._checkIfBatchRequestSucceeded(oEvent)) {
-		//				that._fnUpdateSuccess();
-		//			} else {
-		//				that._fnEntityCreationFailed();
-		//				MessageBox.error(that._oResourceBundle.getText("updateError"));
-		//			}
-		//		});
-		//	}
-		//	oModel.submitChanges();
-			
-		
-	//	var ProjManagerExtId_id = sap.ui.getCore().byId("__xmlview0--ProjManagerExtId_id").getProperty("value");
-			
-			
-	
 
- var oModel2 = new sap.ui.model.odata.ODataModel("/S4HC/sap/opu/odata/cpd/SC_PROJ_ENGMT_CREATE_UPD_SRV/", true);
+			//	this.getModel("appView").setProperty("/busy", true);
+			//	if (this._oViewModel.getProperty("/mode") === "edit") {
+			//		// attach to the request completed event of the batch
+			//		oModel.attachEventOnce("batchRequestCompleted", function (oEvent) {
+			//			if (that._checkIfBatchRequestSucceeded(oEvent)) {
+			//				that._fnUpdateSuccess();
+			//			} else {
+			//				that._fnEntityCreationFailed();
+			//				MessageBox.error(that._oResourceBundle.getText("updateError"));
+			//			}
+			//		});
+			//	}
+			//	oModel.submitChanges();
 
-var oData3 = {
-  "ProjectCategory": "C",
-  "OrgID": "1010",
-  "CostCenter": "0010101902",
-  "ProfitCenter": "YB101",
-  "Customer": "10100002",
-  "Currency": "EUR",
-  "ProjectID": "API3",
-  "ProjectName": "ProjectAPI3",
-  "ProjectStage": "P001",
-  "ProjManagerExtId": "D063538",
-  "StartDate": "2018-04-29T00:00:00.0000000",
-  "EndDate": "2018-05-29T00:00:00.0000000"
-    };
-    
- var oData4 = {
-  "ProjectCategory": sap.ui.getCore().byId("__xmlview0--ProjectCategory_id").getProperty("value"),
-  "OrgID": sap.ui.getCore().byId("__xmlview0--OrgID_id").getProperty("value"),
-  "CostCenter": sap.ui.getCore().byId("__xmlview0--CostCenter_id").getProperty("value"),
-  "ProfitCenter": sap.ui.getCore().byId("__xmlview0--ProfitCenter_id").getProperty("value"),
-  "Customer": sap.ui.getCore().byId("__xmlview0--Customer_id").getProperty("value"),
-  "Currency": sap.ui.getCore().byId("__xmlview0--Currency_id").getProperty("value"),
-  "ProjectID": sap.ui.getCore().byId("__xmlview0--ProjectID_id").getProperty("value"),
-  "ProjectName": sap.ui.getCore().byId("__xmlview0--ProjectName_id").getProperty("value"),
-  "ProjectStage": sap.ui.getCore().byId("__xmlview0--ProjectStage_id").getProperty("value"),
-  "ProjManagerExtId": sap.ui.getCore().byId("__xmlview0--ProjManagerExtId_id").getProperty("value"),
-  "StartDate": sap.ui.getCore().byId("__xmlview0--StartDate_id").getProperty("value"),
-  "EndDate": sap.ui.getCore().byId("__xmlview0--EndDate_id").getProperty("value")
-    };
-       
-    
-    sap.ui.getCore().byId("__xmlview0--ProjManagerExtId_id").getProperty("value");
- 
+			//	var ProjManagerExtId_id = sap.ui.getCore().byId("__xmlview0--ProjManagerExtId_id").getProperty("value");
 
+			var oModel2 = new sap.ui.model.odata.ODataModel("/S4HC/sap/opu/odata/cpd/SC_PROJ_ENGMT_CREATE_UPD_SRV/", true);
 
-oModel2.create("/ProjectSet", oData4, {
-  success: function(oCreatedEntry) {
-  },
-  error: function(oError) { /* do something */ }
-});	   
+			var oData3 = {
+				"ProjectCategory": "C",
+				"OrgID": "1010",
+				"CostCenter": "0010101902",
+				"ProfitCenter": "YB101",
+				"Customer": "10100002",
+				"Currency": "EUR",
+				"ProjectID": "API3",
+				"ProjectName": "ProjectAPI3",
+				"ProjectStage": "P001",
+				"ProjManagerExtId": "D063538",
+				"StartDate": "2018-04-29T00:00:00.0000000",
+				"EndDate": "2018-05-29T00:00:00.0000000"
+			};
 
+			var oData4 = {
+				"ProjectCategory": sap.ui.getCore().byId("__xmlview0--ProjectCategory_id").getProperty("value"),
+				"OrgID": sap.ui.getCore().byId("__xmlview0--OrgID_id").getProperty("value"),
+				"CostCenter": sap.ui.getCore().byId("__xmlview0--CostCenter_id").getProperty("value"),
+				"ProfitCenter": sap.ui.getCore().byId("__xmlview0--ProfitCenter_id").getProperty("value"),
+				"Customer": sap.ui.getCore().byId("__xmlview0--Customer_id").getProperty("value"),
+				"Currency": sap.ui.getCore().byId("__xmlview0--Currency_id").getProperty("value"),
+				"ProjectID": sap.ui.getCore().byId("__xmlview0--ProjectID_id").getProperty("value"),
+				"ProjectName": sap.ui.getCore().byId("__xmlview0--ProjectName_id").getProperty("value"),
+				"ProjectStage": sap.ui.getCore().byId("__xmlview0--ProjectStage_id").getProperty("value"),
+				"ProjManagerExtId": sap.ui.getCore().byId("__xmlview0--ProjManagerExtId_id").getProperty("value"),
+				"StartDate": sap.ui.getCore().byId("__xmlview0--StartDate_id").getProperty("value"),
+				"EndDate": sap.ui.getCore().byId("__xmlview0--EndDate_id").getProperty("value")
+			};
 
-oModel.refresh();
-oModel.updateBindings();
+			oModel2.create("/ProjectSet", oData4, {
+				success: function (oCreatedEntry) {},
+				error: function (oError) { /* do something */ }
+			});
 
-this.onInit();
+			oModel.refresh();
 
 		},
 
