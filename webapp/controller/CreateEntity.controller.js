@@ -173,7 +173,6 @@ sap.ui.define([
 								"StartDate": dateFromShort,
 								"EndDate": dateToShort
 							};
-
 							oModelNew.create("/ProjectSet", ODataNew, {
 								success: function (oCreatedEntry) {
 									sap.m.MessageToast.show("Creation successful");

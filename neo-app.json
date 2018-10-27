@@ -52,7 +52,6 @@
       },
       "description": "mlServices"
     }
-   
   ],
   "welcomeFile": "/webapp/test/flpSandbox.html",
   "sendWelcomeFileRedirect": true
