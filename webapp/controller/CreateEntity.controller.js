@@ -101,8 +101,10 @@ sap.ui.define([
 			
 			var dateFrom = sap.ui.getCore().byId("__xmlview0--StartDate_id").getProperty("value");
 			var dateFromISO = new Date(dateFrom).toISOString();
+			var dateFromShort = dateFromISO.split(".")[0];
 			var dateTo = sap.ui.getCore().byId("__xmlview0--EndDate_id").getProperty("value");
 			var dateToISO = new Date(dateTo).toISOString();
+			var dateToShort = dateToISO.split(".")[0];
 
 			var oData4 = {
 				"ProjectCategory": sap.ui.getCore().byId("__xmlview0--ProjectCategory_id").getProperty("value"),
@@ -115,8 +117,8 @@ sap.ui.define([
 				"ProjectName": sap.ui.getCore().byId("__xmlview0--ProjectName_id").getProperty("value"),
 				"ProjectStage": sap.ui.getCore().byId("__xmlview0--ProjectStage_id").getProperty("value"),
 				"ProjManagerExtId": sap.ui.getCore().byId("__xmlview0--ProjManagerExtId_id").getProperty("value"),
-				"StartDate": dateFromISO,
-				"EndDate": dateToISO
+				"StartDate": dateFromShort,
+				"EndDate": dateToShort
 			};
 
 			oModel2.create("/ProjectSet", oData4, {
