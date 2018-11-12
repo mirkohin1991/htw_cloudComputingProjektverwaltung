@@ -119,14 +119,19 @@ sap.ui.define([
 								});
 				**/
 
+			/********* 
+			 * 1. The app has to determine the source language of the inserted text
+			 **********/
+			//Get the user input for the project name
 			var bodyLngDet = JSON.stringify({
 				"message": sap.ui.getCore().byId("__xmlview0--ProjectName_id").getProperty("value")
 			});
-
+			//Prepare a new HTTP request
 			var xhr = new XMLHttpRequest();
 			xhr.withCredentials = true;
-
-			xhr.addEventListener("readystatechange", function () {
+			//add an event listener so that we can react on the result
+			xhr.addEventListener("readystatechange", this._eventListenerLangDetection.bind(this));
+			/*xhr.addEventListener("readystatechange", function () {
 				if (this.readyState === 4) {
 					var langCode = JSON.parse(this.responseText).langCode;
 					sap.m.MessageToast.show(langCode);
@@ -179,15 +184,17 @@ sap.ui.define([
 								},
 								error: function (oError) {
 									sap.m.MessageBox.show(JSON.parse(oError.response.body).error.message.value);
-									/* do something */
 								}
 							});
 
 							//Does not work!
 							oModel.refresh();
 						}
-					});
+					}); 
+			    
+		   
 
+					//the relative path /mlServices is mapped to the absolute path in the cloud connector and maintained as route in the neo-app-json file
 					xhr.open("POST", "/mlServices/translation/translation");
 					xhr.setRequestHeader("Content-Type", "application/json");
 					xhr.setRequestHeader("apikey", "ADwoLzuKGr0tLpz1OIsPKhTqSEwEccfc");
@@ -198,6 +205,7 @@ sap.ui.define([
 
 				}
 			});
+			*/
 
 			xhr.open("POST", "/mlServices/languagedetection/language");
 			xhr.setRequestHeader("Content-Type", "application/json");
@@ -433,7 +441,146 @@ sap.ui.define([
 				}
 			}
 			return aControls;
+		},
+		
+		_eventListenerLangDetection: function (event) {
+			//if (this.readyState === 4) {
+			if(event.currentTarget.readyState === 4) { 
+
+				var parsedResponse = JSON.parse(event.currentTarget.responseText);
+				if (parsedResponse.hasOwnProperty('error')) {
+					var errorMessage = parsedResponse.error.message;
+					sap.m.MessageToast.show(errorMessage);
+				} else if (parsedResponse.hasOwnProperty('langCode')) {
+					var langCode = parsedResponse.langCode;
+					sap.m.MessageToast.show(langCode);
+					var data = JSON.stringify({
+						"sourceLanguage": langCode,
+						"targetLanguages": [
+							"en"
+						],
+						"units": [{
+							"value": sap.ui.getCore().byId("__xmlview0--ProjectName_id").getProperty("value"),
+							"key": "ANALYZE_SALES_DATA"
+						}]
+					});
+
+					var xhr2 = new XMLHttpRequest();
+					xhr2.withCredentials = true;
+					
+					xhr2.addEventListener("readystatechange", this._eventListenerTranslation);
+						
+					/*xhr2.addEventListener("readystatechange", function () {
+						if (this.readyState === 4) {
+							var parsedResponse = JSON.parse(this.responseText);
+							if (parsedResponse.hasOwnProperty('error')) {
+							//	var errorMessage = parsedResponse.error.message;
+							//	sap.m.MessageToast.show(errorMessage);
+							} else if (parsedResponse.hasOwnProperty('units')) {
+								var translatedText = parsedResponse.units[0].translations[0].value;
+								sap.m.MessageToast.show(translatedText);
+
+								var oModelNew = new sap.ui.model.odata.ODataModel("/S4HC/sap/opu/odata/cpd/SC_PROJ_ENGMT_CREATE_UPD_SRV/", true);
+								var dateFrom = sap.ui.getCore().byId("__xmlview0--StartDate_id").getProperty("value");
+								var dateFromISO = new Date(dateFrom).toISOString();
+								var dateFromShort = dateFromISO.split(".")[0];
+								var dateTo = sap.ui.getCore().byId("__xmlview0--EndDate_id").getProperty("value");
+								var dateToISO = new Date(dateTo).toISOString();
+								var dateToShort = dateToISO.split(".")[0];
+
+								var ODataNew = {
+									"ProjectCategory": sap.ui.getCore().byId("__xmlview0--ProjectCategory_id").getProperty("value"),
+									"OrgID": sap.ui.getCore().byId("__xmlview0--OrgID_id").getProperty("value"),
+									"CostCenter": sap.ui.getCore().byId("__xmlview0--CostCenter_id").getProperty("value"),
+									"ProfitCenter": sap.ui.getCore().byId("__xmlview0--ProfitCenter_id").getProperty("value"),
+									"Customer": sap.ui.getCore().byId("__xmlview0--Customer_id").getProperty("value"),
+									"Currency": sap.ui.getCore().byId("__xmlview0--Currency_id").getProperty("value"),
+									"ProjectID": sap.ui.getCore().byId("__xmlview0--ProjectID_id").getProperty("value"),
+									"ProjectName": translatedText,
+									"ProjectStage": sap.ui.getCore().byId("__xmlview0--ProjectStage_id").getProperty("value"),
+									"ProjManagerExtId": sap.ui.getCore().byId("__xmlview0--ProjManagerExtId_id").getProperty("value"),
+									"StartDate": dateFromShort,
+									"EndDate": dateToShort
+								};
+								oModelNew.create("/ProjectSet", ODataNew, {
+									success: function (oCreatedEntry) {
+										sap.m.MessageToast.show("Creation successful");
+									},
+									error: function (oError) {
+										sap.m.MessageBox.show(JSON.parse(oError.response.body).error.message.value);
+									
+									}
+								});
+
+							}
+
+						}
+					});
+					
+					*/
+
+					xhr2.open("POST", "/mlServices/translation/translation");
+					xhr2.setRequestHeader("Content-Type", "application/json");
+					xhr2.setRequestHeader(
+						"apikey", "ADwoLzuKGr0tLpz1OIsPKhTqSEwEccfc");
+					//	xhr.setRequestHeader("cache-control", "no-cache");
+					//	xhr.setRequestHeader("Postman-Token", "685d3dc8-e09e-4e2b-9b97-136ffe18d3cf");
+
+					xhr2.send(data);
+
+				}
+			}
+		},
+		
+			_eventListenerTranslation: function () {
+			if (this.readyState === 4) {
+							var parsedResponse = JSON.parse(this.responseText);
+							if (parsedResponse.hasOwnProperty('error')) {
+								var errorMessage = parsedResponse.error.message;
+								sap.m.MessageToast.show(errorMessage);
+							} else if (parsedResponse.hasOwnProperty('units')) {
+								var translatedText = parsedResponse.units[0].translations[0].value;
+								sap.m.MessageToast.show(translatedText);
+
+								var oModelNew = new sap.ui.model.odata.ODataModel("/S4HC/sap/opu/odata/cpd/SC_PROJ_ENGMT_CREATE_UPD_SRV/", true);
+								var dateFrom = sap.ui.getCore().byId("__xmlview0--StartDate_id").getProperty("value");
+								var dateFromISO = new Date(dateFrom).toISOString();
+								var dateFromShort = dateFromISO.split(".")[0];
+								var dateTo = sap.ui.getCore().byId("__xmlview0--EndDate_id").getProperty("value");
+								var dateToISO = new Date(dateTo).toISOString();
+								var dateToShort = dateToISO.split(".")[0];
+
+								var ODataNew = {
+									"ProjectCategory": sap.ui.getCore().byId("__xmlview0--ProjectCategory_id").getProperty("value"),
+									"OrgID": sap.ui.getCore().byId("__xmlview0--OrgID_id").getProperty("value"),
+									"CostCenter": sap.ui.getCore().byId("__xmlview0--CostCenter_id").getProperty("value"),
+									"ProfitCenter": sap.ui.getCore().byId("__xmlview0--ProfitCenter_id").getProperty("value"),
+									"Customer": sap.ui.getCore().byId("__xmlview0--Customer_id").getProperty("value"),
+									"Currency": sap.ui.getCore().byId("__xmlview0--Currency_id").getProperty("value"),
+									"ProjectID": sap.ui.getCore().byId("__xmlview0--ProjectID_id").getProperty("value"),
+									"ProjectName": translatedText,
+									"ProjectStage": sap.ui.getCore().byId("__xmlview0--ProjectStage_id").getProperty("value"),
+									"ProjManagerExtId": sap.ui.getCore().byId("__xmlview0--ProjManagerExtId_id").getProperty("value"),
+									"StartDate": dateFromShort,
+									"EndDate": dateToShort
+								};
+								oModelNew.create("/ProjectSet", ODataNew, {
+									success: function (oCreatedEntry) {
+										sap.m.MessageToast.show("Creation successful");
+									},
+									error: function (oError) {
+										sap.m.MessageBox.show(JSON.parse(oError.response.body).error.message.value);
+										/* do something */
+									}
+								});
+
+							}
+
+						}
+			
 		}
+		
+
 	});
 
 });
