@@ -115,6 +115,11 @@ sap.ui.define([
 		 * @public
 		 */
 		onRefresh: function () {
+			/**
+			 * MIRKO: Force to get all projects so that we can set the focu
+			 */
+			//Does not work: 
+			//this._oList.getBinding("items").sRangeParams = "$skip=0&$top=100";
 			this._oList.getBinding("items").refresh();
 		},
 
@@ -142,11 +147,14 @@ sap.ui.define([
 				that._oODataModel.resetChanges();
 				that._showDetail(oItem);
 			};
-			if (this._oODataModel.hasPendingChanges()) {
-				this._leaveEditPage(fnLeave);
-			} else {
-				this._showDetail(oItem);
-			}
+			/**
+			 *  MIRKO: Always switch back to showDetail(). Before that we were stuck in the Create View
+			 */
+			//	if (this._oODataModel.hasPendingChanges()) {
+			//	this._leaveEditPage(fnLeave);
+			//	} else {
+			this._showDetail(oItem);
+			//	}
 			that.getModel("appView").setProperty("/addEnabled", true);
 		},
 
@@ -204,6 +212,7 @@ sap.ui.define([
 		 */
 		onAdd: function () {
 			this.getModel("appView").setProperty("/addEnabled", false);
+			//	this.getRouter().getTargets().display("display");
 			this.getRouter().getTargets().display("create");
 
 		},

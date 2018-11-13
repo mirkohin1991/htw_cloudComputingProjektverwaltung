@@ -21,15 +21,15 @@
 					<Input name="ProjPartnerCompCode" id="ProjPartnerCompCode_id" valueLiveUpdate="true" liveChange="_validateSaveEnablement" enabled="true" visible="true" value="{ path: 'ProjPartnerCompCode', type: 'sap.ui.model.odata.type.String' , constraints:{ maxLength:4, nullable:false } }"/>
 					<Label text="Project Accountant ID" required="false"/>
 					<Input name="ProjAccountantExtId" id="ProjAccountantExtId_id" valueLiveUpdate="true" liveChange="_validateSaveEnablement" enabled="true" visible="true" value="{ path: 'ProjAccountantExtId', type: 'sap.ui.model.odata.type.String' , constraints:{ maxLength:38 } }"/>
-					<Label text="Stage ID"/>
+					<Label text="Stage ID" required="true"/>
 					<Input name="ProjectStage" id="ProjectStage_id" valueLiveUpdate="true" liveChange="_validateSaveEnablement" enabled="{= ${viewModel>/mode} === 'edit'? false: true}" visible="true" value="{ path: 'ProjectStage', type: 'sap.ui.model.odata.type.String' , constraints:{ maxLength:4 } }"/>
 					<Label text="Project Controller ID" required="false"/>
 					<Input name="ProjControllerExtId" id="ProjControllerExtId_id" valueLiveUpdate="true" liveChange="_validateSaveEnablement" enabled="true" visible="true" value="{ path: 'ProjControllerExtId', type: 'sap.ui.model.odata.type.String' , constraints:{ maxLength:38 } }"/>
 					<Label text="Project Partner ID" required="false"/>
 					<Input name="ProjPartnerExtId" id="ProjPartnerExtId_id" valueLiveUpdate="true" liveChange="_validateSaveEnablement" enabled="true" visible="true" value="{ path: 'ProjPartnerExtId', type: 'sap.ui.model.odata.type.String' , constraints:{ maxLength:38 } }"/>
-					<Label text="Start Date"/>
+					<Label text="Start Date" required="true"/>
 					<DatePicker name="StartDate" value="{ path: 'StartDate', type: 'sap.ui.model.type.DateTime'}" id="StartDate_id" type="DateTime" visible="true"/>
-					<Label text="End Date"/>
+					<Label text="End Date" required="true"/>
 					<DatePicker name="EndDate" value="{ path: 'EndDate', type: 'sap.ui.model.type.DateTime'}" id="EndDate_id" type="DateTime" enabled="true" visible="true"/>
 					<Label text="Customer ID" required="true"/>
 					<Input name="Customer" id="Customer_id" valueLiveUpdate="true" liveChange="_validateSaveEnablement" enabled="{= ${viewModel>/mode} === 'edit'? false: true}" visible="true" value="{ path: 'Customer', type: 'sap.ui.model.odata.type.String' , constraints:{ maxLength:10 } }"/>

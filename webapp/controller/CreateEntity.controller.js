@@ -80,140 +80,50 @@ sap.ui.define([
 			//	}
 			//	oModel.submitChanges();
 
+			//oModel.resetChanges();
+			//	oModel.refresh();
+			//	this.getRouter().navTo("object", { ProjectID: "CP0001"}, true);
+			//sap.ui.getCore().byId("application-CreateProjects-display-component---master").getController().onSelectionChange();
+			//		return;
+
 			//	var ProjManagerExtId_id = sap.ui.getCore().byId("__xmlview0--ProjManagerExtId_id").getProperty("value");
 
 			//SAMPLE DATA
-			/*	"ProjectCategory": "C",
-				"OrgID": "1010",
-				"CostCenter": "0010101902",
-				"ProfitCenter": "YB101",
-				"Customer": "10100002",
-				"Currency": "EUR",
-				"ProjectID": "API3",
-				"ProjectName": "ProjectAPI3",
-				"ProjectStage": "P001",
-				"ProjManagerExtId": "D063538",
-				"StartDate": "2018-04-29T00:00:00.0000000",
-				"EndDate": "2018-05-29T00:00:00.0000000"
+			/*	
+			"ProjManagerExtId": D063538
+			"ProjectStage": P001
+			"Customer": 10100002			
+			"CostCenter": 0010101902
+			"ProfitCenter": YB101
+			"ProjectCategory": C
+			"Currency": EUR
+			"OrgID": 1010
+				
+			to be changed:
+			"ProjectID": API3
+			"ProjectName": ProjectAPI3
 			*/
-
-			//	var url = "https://sandbox.api.sap.com/ml/translation/translation";
-
-			/**					var settings = {
-									"async": true,
-									"crossDomain": true,
-									"url": "/mlTranslationService/translation",
-									"method": "POST",
-									"headers": {
-										"apikey": "bIz3xKOCcyoGpHucikNb5kr1CvWT7Bvh",
-										"content-type": "application/json",
-										"cache-control": "no-cache"
-							//			"postman-token": "4b3e7d86-f357-6269-3c1b-171d4a589e42"
-									},
-									"processData": false,
-									"data": "{\n  \"sourceLanguage\": \"de\",\n  \"targetLanguages\": [\n    \"en\"\n  ],\n  \"units\": [\n    {\n      \"value\": \"Projekt für Finanzbuchhaltung\",\n      \"key\": \"ANALYZE_SALES_DATA\"\n    }\n  ]\n}"
-								};
-
-								$.ajax(settings).done(function (response) {
-									sap.m.MessageToast.show(response.units[0].translations[0].value) ;
-								});
-				**/
 
 			/********* 
-			 * 1. The app has to determine the source language of the inserted text
+			 * 1. API CALL:  The app has to determine the source language of the provided text
 			 **********/
 			//Get the user input for the project name
-			var bodyLngDet = JSON.stringify({
+			var httpBody = JSON.stringify({
 				"message": sap.ui.getCore().byId("__xmlview0--ProjectName_id").getProperty("value")
 			});
-			//Prepare a new HTTP request
-			var xhr = new XMLHttpRequest();
-			xhr.withCredentials = true;
+			//Create a new HTTP request
+			var httpRequest = new XMLHttpRequest();
+			httpRequest.withCredentials = true;
 			//add an event listener so that we can react on the result
-			xhr.addEventListener("readystatechange", this._eventListenerLangDetection.bind(this));
-			/*xhr.addEventListener("readystatechange", function () {
-				if (this.readyState === 4) {
-					var langCode = JSON.parse(this.responseText).langCode;
-					sap.m.MessageToast.show(langCode);
-
-					var data = JSON.stringify({
-						"sourceLanguage": langCode,
-						"targetLanguages": [
-							"en"
-						],
-						"units": [{
-							"value": sap.ui.getCore().byId("__xmlview0--ProjectName_id").getProperty("value"),
-							"key": "ANALYZE_SALES_DATA"
-						}]
-					});
-
-					xhr = new XMLHttpRequest();
-					xhr.withCredentials = true;
-
-					xhr.addEventListener("readystatechange", function () {
-						if (this.readyState === 4) {
-							var translatedText = JSON.parse(this.responseText).units[0].translations[0].value;
-							sap.m.MessageToast.show(translatedText);
-							// console.log(this.responseText);
-
-							var oModelNew = new sap.ui.model.odata.ODataModel("/S4HC/sap/opu/odata/cpd/SC_PROJ_ENGMT_CREATE_UPD_SRV/", true);
-							var dateFrom = sap.ui.getCore().byId("__xmlview0--StartDate_id").getProperty("value");
-							var dateFromISO = new Date(dateFrom).toISOString();
-							var dateFromShort = dateFromISO.split(".")[0];
-							var dateTo = sap.ui.getCore().byId("__xmlview0--EndDate_id").getProperty("value");
-							var dateToISO = new Date(dateTo).toISOString();
-							var dateToShort = dateToISO.split(".")[0];
-
-							var ODataNew = {
-								"ProjectCategory": sap.ui.getCore().byId("__xmlview0--ProjectCategory_id").getProperty("value"),
-								"OrgID": sap.ui.getCore().byId("__xmlview0--OrgID_id").getProperty("value"),
-								"CostCenter": sap.ui.getCore().byId("__xmlview0--CostCenter_id").getProperty("value"),
-								"ProfitCenter": sap.ui.getCore().byId("__xmlview0--ProfitCenter_id").getProperty("value"),
-								"Customer": sap.ui.getCore().byId("__xmlview0--Customer_id").getProperty("value"),
-								"Currency": sap.ui.getCore().byId("__xmlview0--Currency_id").getProperty("value"),
-								"ProjectID": sap.ui.getCore().byId("__xmlview0--ProjectID_id").getProperty("value"),
-								"ProjectName": translatedText,
-								"ProjectStage": sap.ui.getCore().byId("__xmlview0--ProjectStage_id").getProperty("value"),
-								"ProjManagerExtId": sap.ui.getCore().byId("__xmlview0--ProjManagerExtId_id").getProperty("value"),
-								"StartDate": dateFromShort,
-								"EndDate": dateToShort
-							};
-							oModelNew.create("/ProjectSet", ODataNew, {
-								success: function (oCreatedEntry) {
-									sap.m.MessageToast.show("Creation successful");
-								},
-								error: function (oError) {
-									sap.m.MessageBox.show(JSON.parse(oError.response.body).error.message.value);
-								}
-							});
-
-							//Does not work!
-							oModel.refresh();
-						}
-					}); 
-			    
-		   
-
-					//the relative path /mlServices is mapped to the absolute path in the cloud connector and maintained as route in the neo-app-json file
-					xhr.open("POST", "/mlServices/translation/translation");
-					xhr.setRequestHeader("Content-Type", "application/json");
-					xhr.setRequestHeader("apikey", "ADwoLzuKGr0tLpz1OIsPKhTqSEwEccfc");
-					//	xhr.setRequestHeader("cache-control", "no-cache");
-					//	xhr.setRequestHeader("Postman-Token", "685d3dc8-e09e-4e2b-9b97-136ffe18d3cf");
-
-					xhr.send(data);
-
-				}
-			});
-			*/
-
-			xhr.open("POST", "/mlServices/languagedetection/language");
-			xhr.setRequestHeader("Content-Type", "application/json");
-			xhr.setRequestHeader("apikey", "ADwoLzuKGr0tLpz1OIsPKhTqSEwEccfc");
-			//	xhr.setRequestHeader("cache-control", "no-cache");
-			//	xhr.setRequestHeader("Postman-Token", "685d3dc8-e09e-4e2b-9b97-136ffe18d3cf");
-
-			xhr.send(bodyLngDet);
+			httpRequest.addEventListener("readystatechange", this._eventListenerLangDetection.bind(this));
+			//Open the connection to the service. The following relative path '/mlServices' is mapped in the destinations area of the cloud platfom to absolute path 
+			//'https://sandbox.api.sap.com/ml'. In the neo-app.json file the link between the app and the cloud platform destination is maintained.
+			httpRequest.open("POST", "/mlServices/languagedetection/language");
+			//The content is requested in the JSON format. Additonally the API requires a unique key
+			httpRequest.setRequestHeader("Content-Type", "application/json");
+			httpRequest.setRequestHeader("apikey", "bIz3xKOCcyoGpHucikNb5kr1CvWT7Bvh");
+			//Finally the http request is fired
+			httpRequest.send(httpBody);
 
 		},
 
@@ -442,144 +352,155 @@ sap.ui.define([
 			}
 			return aControls;
 		},
-		
+
+		/**
+		 * Event Listener for the result handling of the language detection machine learning service
+		 * @param event: object containing the event information (most importantly the HTTP result)
+		 */
 		_eventListenerLangDetection: function (event) {
 			//if (this.readyState === 4) {
-			if(event.currentTarget.readyState === 4) { 
-
+			//We have to check for the readyState 4, meanining that this is the response event
+			if (event.currentTarget.readyState === 4) {
+				//First we have to parse the response into JSON format
 				var parsedResponse = JSON.parse(event.currentTarget.responseText);
-				if (parsedResponse.hasOwnProperty('error')) {
+				//In case of error, an error popup is shown
+				if (parsedResponse.hasOwnProperty("error")) {
 					var errorMessage = parsedResponse.error.message;
-					sap.m.MessageToast.show(errorMessage);
-				} else if (parsedResponse.hasOwnProperty('langCode')) {
+					sap.m.MessageBox.show(errorMessage);
+					//Check if the response contains the expected information	
+				} else if (parsedResponse.hasOwnProperty("langCode")) {
+					/********* 
+					 * 2. API CALL: Text translation into english
+					 **********/
+					//Store the detected language
 					var langCode = parsedResponse.langCode;
+					//Bring the detected language to the UI
 					sap.m.MessageToast.show(langCode);
+					//Now we can prepare the second HTTP call to translate the text into english
 					var data = JSON.stringify({
-						"sourceLanguage": langCode,
+						"sourceLanguage": langCode, // detected input language
 						"targetLanguages": [
 							"en"
 						],
 						"units": [{
-							"value": sap.ui.getCore().byId("__xmlview0--ProjectName_id").getProperty("value"),
-							"key": "ANALYZE_SALES_DATA"
+							"value": sap.ui.getCore().byId("__xmlview0--ProjectName_id").getProperty("value"), //This is the information that the user has entered on the UI
+							"key": "PROJECT_TEXT"
 						}]
 					});
-
-					var xhr2 = new XMLHttpRequest();
-					xhr2.withCredentials = true;
-					
-					xhr2.addEventListener("readystatechange", this._eventListenerTranslation);
-						
-					/*xhr2.addEventListener("readystatechange", function () {
-						if (this.readyState === 4) {
-							var parsedResponse = JSON.parse(this.responseText);
-							if (parsedResponse.hasOwnProperty('error')) {
-							//	var errorMessage = parsedResponse.error.message;
-							//	sap.m.MessageToast.show(errorMessage);
-							} else if (parsedResponse.hasOwnProperty('units')) {
-								var translatedText = parsedResponse.units[0].translations[0].value;
-								sap.m.MessageToast.show(translatedText);
-
-								var oModelNew = new sap.ui.model.odata.ODataModel("/S4HC/sap/opu/odata/cpd/SC_PROJ_ENGMT_CREATE_UPD_SRV/", true);
-								var dateFrom = sap.ui.getCore().byId("__xmlview0--StartDate_id").getProperty("value");
-								var dateFromISO = new Date(dateFrom).toISOString();
-								var dateFromShort = dateFromISO.split(".")[0];
-								var dateTo = sap.ui.getCore().byId("__xmlview0--EndDate_id").getProperty("value");
-								var dateToISO = new Date(dateTo).toISOString();
-								var dateToShort = dateToISO.split(".")[0];
-
-								var ODataNew = {
-									"ProjectCategory": sap.ui.getCore().byId("__xmlview0--ProjectCategory_id").getProperty("value"),
-									"OrgID": sap.ui.getCore().byId("__xmlview0--OrgID_id").getProperty("value"),
-									"CostCenter": sap.ui.getCore().byId("__xmlview0--CostCenter_id").getProperty("value"),
-									"ProfitCenter": sap.ui.getCore().byId("__xmlview0--ProfitCenter_id").getProperty("value"),
-									"Customer": sap.ui.getCore().byId("__xmlview0--Customer_id").getProperty("value"),
-									"Currency": sap.ui.getCore().byId("__xmlview0--Currency_id").getProperty("value"),
-									"ProjectID": sap.ui.getCore().byId("__xmlview0--ProjectID_id").getProperty("value"),
-									"ProjectName": translatedText,
-									"ProjectStage": sap.ui.getCore().byId("__xmlview0--ProjectStage_id").getProperty("value"),
-									"ProjManagerExtId": sap.ui.getCore().byId("__xmlview0--ProjManagerExtId_id").getProperty("value"),
-									"StartDate": dateFromShort,
-									"EndDate": dateToShort
-								};
-								oModelNew.create("/ProjectSet", ODataNew, {
-									success: function (oCreatedEntry) {
-										sap.m.MessageToast.show("Creation successful");
-									},
-									error: function (oError) {
-										sap.m.MessageBox.show(JSON.parse(oError.response.body).error.message.value);
-									
-									}
-								});
-
-							}
-
-						}
-					});
-					
-					*/
-
-					xhr2.open("POST", "/mlServices/translation/translation");
-					xhr2.setRequestHeader("Content-Type", "application/json");
-					xhr2.setRequestHeader(
-						"apikey", "ADwoLzuKGr0tLpz1OIsPKhTqSEwEccfc");
-					//	xhr.setRequestHeader("cache-control", "no-cache");
-					//	xhr.setRequestHeader("Postman-Token", "685d3dc8-e09e-4e2b-9b97-136ffe18d3cf");
-
-					xhr2.send(data);
-
+					//Create a new HTTP request
+					var httpRequest = new XMLHttpRequest();
+					httpRequest.withCredentials = true;
+					//add an event listener so that we can react on the result of the translation service
+					httpRequest.addEventListener("readystatechange", this._eventListenerTranslation);
+					//Open the connection to the service. The following relative path '/mlServices' is mapped in the destinations area of the cloud platfom to absolute path 
+					//'https://sandbox.api.sap.com/ml'. In the neo-app.json file the link between the app and the cloud platform destination is maintained.
+					httpRequest.open("POST", "/mlServices/translation/translation");
+					//The content is requested in the JSON format. Additonally the API requires a unique key
+					httpRequest.setRequestHeader("Content-Type", "application/json");
+					httpRequest.setRequestHeader("apikey", "bIz3xKOCcyoGpHucikNb5kr1CvWT7Bvh");
+					//Finally the http request is fired
+					httpRequest.send(data);
 				}
 			}
 		},
-		
-			_eventListenerTranslation: function () {
+
+		/**
+		 * Event Listener for the result handling of the translation machine learning service
+		 */
+		_eventListenerTranslation: function () {
+			//We have to check for the readyState 4, meanining that this is the response event
 			if (this.readyState === 4) {
-							var parsedResponse = JSON.parse(this.responseText);
-							if (parsedResponse.hasOwnProperty('error')) {
-								var errorMessage = parsedResponse.error.message;
-								sap.m.MessageToast.show(errorMessage);
-							} else if (parsedResponse.hasOwnProperty('units')) {
-								var translatedText = parsedResponse.units[0].translations[0].value;
-								sap.m.MessageToast.show(translatedText);
+				var parsedResponse = JSON.parse(this.responseText);
+				//In case of an error, an error popup is shown
+				if (parsedResponse.hasOwnProperty('error')) {
+					var errorMessage = parsedResponse.error.message;
+					sap.m.MessageBox.show(errorMessage);
+					// Check whether the response contains the expected element
+				} else if (parsedResponse.hasOwnProperty('units')) {
+					/********* 
+					 * 3. API CALL: Create a new project including the translated text in S/4HANA
+					 **********/
+					//Store the translated text
+					var translatedText = parsedResponse.units[0].translations[0].value;
+					//Display the text on the UI
+					sap.m.MessageToast.show(translatedText);
 
-								var oModelNew = new sap.ui.model.odata.ODataModel("/S4HC/sap/opu/odata/cpd/SC_PROJ_ENGMT_CREATE_UPD_SRV/", true);
-								var dateFrom = sap.ui.getCore().byId("__xmlview0--StartDate_id").getProperty("value");
-								var dateFromISO = new Date(dateFrom).toISOString();
-								var dateFromShort = dateFromISO.split(".")[0];
-								var dateTo = sap.ui.getCore().byId("__xmlview0--EndDate_id").getProperty("value");
-								var dateToISO = new Date(dateTo).toISOString();
-								var dateToShort = dateToISO.split(".")[0];
+					//For the final API call to create the project we want to make us of an OData model as the backend call is OData based
+					var oModelNew = new sap.ui.model.odata.ODataModel("/S4HC/sap/opu/odata/cpd/SC_PROJ_ENGMT_CREATE_UPD_SRV/", true);
 
-								var ODataNew = {
-									"ProjectCategory": sap.ui.getCore().byId("__xmlview0--ProjectCategory_id").getProperty("value"),
-									"OrgID": sap.ui.getCore().byId("__xmlview0--OrgID_id").getProperty("value"),
-									"CostCenter": sap.ui.getCore().byId("__xmlview0--CostCenter_id").getProperty("value"),
-									"ProfitCenter": sap.ui.getCore().byId("__xmlview0--ProfitCenter_id").getProperty("value"),
-									"Customer": sap.ui.getCore().byId("__xmlview0--Customer_id").getProperty("value"),
-									"Currency": sap.ui.getCore().byId("__xmlview0--Currency_id").getProperty("value"),
-									"ProjectID": sap.ui.getCore().byId("__xmlview0--ProjectID_id").getProperty("value"),
-									"ProjectName": translatedText,
-									"ProjectStage": sap.ui.getCore().byId("__xmlview0--ProjectStage_id").getProperty("value"),
-									"ProjManagerExtId": sap.ui.getCore().byId("__xmlview0--ProjManagerExtId_id").getProperty("value"),
-									"StartDate": dateFromShort,
-									"EndDate": dateToShort
-								};
-								oModelNew.create("/ProjectSet", ODataNew, {
-									success: function (oCreatedEntry) {
-										sap.m.MessageToast.show("Creation successful");
-									},
-									error: function (oError) {
-										sap.m.MessageBox.show(JSON.parse(oError.response.body).error.message.value);
-										/* do something */
-									}
-								});
+					//For the date fields we have to do an additional transformation into the ISO format and shorten int
+					var dateFrom = sap.ui.getCore().byId("__xmlview0--StartDate_id").getProperty("value");
+					var dateFromISO = new Date(dateFrom).toISOString();
+					var dateFromShort = dateFromISO.split(".")[0];
+					var dateTo = sap.ui.getCore().byId("__xmlview0--EndDate_id").getProperty("value");
+					var dateToISO = new Date(dateTo).toISOString();
+					var dateToShort = dateToISO.split(".")[0];
 
-							}
+					//Now the full payload is prepared. Each field content is retrieved by the UI element
+					var jsonBody = {
+						"ProjectCategory": sap.ui.getCore().byId("__xmlview0--ProjectCategory_id").getProperty("value"),
+						"OrgID": sap.ui.getCore().byId("__xmlview0--OrgID_id").getProperty("value"),
+						"CostCenter": sap.ui.getCore().byId("__xmlview0--CostCenter_id").getProperty("value"),
+						"ProfitCenter": sap.ui.getCore().byId("__xmlview0--ProfitCenter_id").getProperty("value"),
+						"Customer": sap.ui.getCore().byId("__xmlview0--Customer_id").getProperty("value"),
+						"Currency": sap.ui.getCore().byId("__xmlview0--Currency_id").getProperty("value"),
+						"ProjectID": sap.ui.getCore().byId("__xmlview0--ProjectID_id").getProperty("value"),
+						"ProjectName": translatedText, // Here the translated text is insert.
+						"ProjectStage": sap.ui.getCore().byId("__xmlview0--ProjectStage_id").getProperty("value"),
+						"ProjManagerExtId": sap.ui.getCore().byId("__xmlview0--ProjManagerExtId_id").getProperty("value"),
+						"StartDate": dateFromShort, //transformed from date
+						"EndDate": dateToShort //transformed to date
+					};
 
+					/**var jsonBodyStatic =   {
+						"ProjectCategory": "C",
+						"OrgID": "1010",
+						"CostCenter": "0010101902",
+						"ProfitCenter": "YB101",
+						"Customer": "10100002",
+						"Currency": "EUR",
+						"ProjectID": sap.ui.getCore().byId("__xmlview0--ProjectID_id").getProperty("value"),
+						"ProjectName": "A Mirko NEU", // Here the translated text is insert.
+						"ProjectStage": "P001",
+						"ProjManagerExtId":"D063538",
+						"StartDate": dateFromShort, //transformed from date
+						"EndDate": dateToShort //transformed to date
+					}; */
+
+					//Now we finally fire the OData-based HTTP POST request.
+					oModelNew.create("/ProjectSet", jsonBody, {
+						success: function (oCreatedEntry) {
+							sap.m.MessageToast.show("Creation successful, ID" + oCreatedEntry.ProjectID);
+
+							//initialize some master data
+							var oMasterModel = sap.ui.getCore().byId("application-CreateProjects-display-component---master").getModel();
+							var oAppViewModel = sap.ui.getCore().byId("application-CreateProjects-display-component---master").getModel("appView");
+							var oMasterController = sap.ui.getCore().byId("application-CreateProjects-display-component---master").getController();
+
+							//gcreate a new project key for the model and store the path
+							var sObjectPath = oMasterModel.createKey("ProjectSet", oCreatedEntry);
+							//update the application view model with the new project path so that we can automatically open it after the creation
+							oAppViewModel.setProperty("/itemToSelect", "/" + sObjectPath);
+							oAppViewModel.setProperty("/busy", false);
+							//refresh the master list (important. Otherwise, we can not set the focus to the new project)
+							oMasterController.onRefresh();
+							//Finally we open the new object to show it on the UI
+							oMasterController.getRouter().navTo("object", {
+								ProjectID: oCreatedEntry.ProjectID
+							}, true);
+
+						},
+						error: function (oError) {
+							//In case of error, an error message box is shown
+							sap.m.MessageBox.show(JSON.parse(oError.response.body).error.message.value);
 						}
-			
+					});
+
+				}
+
+			}
+
 		}
-		
 
 	});
 
