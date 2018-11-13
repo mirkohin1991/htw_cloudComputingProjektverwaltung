@@ -384,9 +384,11 @@ sap.ui.define([
 						],
 						"units": [{
 							"value": sap.ui.getCore().byId("__xmlview0--ProjectName_id").getProperty("value"), //This is the information that the user has entered on the UI
-							"key": "PROJECT_TEXT"
+							"key": "PROJECT_TRANSL"
 						}]
 					});
+
+
 					//Create a new HTTP request
 					var httpRequest = new XMLHttpRequest();
 					httpRequest.withCredentials = true;
