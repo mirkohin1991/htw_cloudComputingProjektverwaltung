@@ -3,8 +3,6 @@
 		<semantic:content>
 			<f:SimpleForm class="editableForm" columnsL="1" columnsM="1" editable="true" emptySpanL="4" emptySpanM="4" id="newEntitySimpleForm" labelSpanL="3" labelSpanM="3" layout="ResponsiveGridLayout" maxContainerCols="2" minWidth="1024" title="{= ${viewModel>/mode} === 'edit'? 'Edit Project': 'New Project'}">
 				<f:content>
-					<Label text="Project Desc." required="false"/>
-					<Input name="ProjectDesc" id="ProjectDesc_id" valueLiveUpdate="true" liveChange="_validateSaveEnablement" enabled="true" visible="true" value="{ path: 'ProjectDesc', type: 'sap.ui.model.odata.type.String' }"/>
 					<Label text="Project Manager's Company Code"/>
 					<Input name="ProjManagerCompCode" id="ProjManagerCompCode_id" valueLiveUpdate="true" liveChange="_validateSaveEnablement" enabled="true" visible="true" value="{ path: 'ProjManagerCompCode', type: 'sap.ui.model.odata.type.String' , constraints:{ maxLength:4, nullable:false } }"/>
 					<Label text="Project Accountant's Company Code"/>
@@ -45,6 +43,8 @@
 					<Input name="OrgID" id="OrgID_id" valueLiveUpdate="true" liveChange="_validateSaveEnablement" enabled="{= ${viewModel>/mode} === 'edit'? false: true}" visible="true" value="{ path: 'OrgID', type: 'sap.ui.model.odata.type.String' , constraints:{ maxLength:5 } }"/>
 					<Label text="Confidential" required="false"/>
 					<Input name="Confidential" id="Confidential_id" valueLiveUpdate="true" liveChange="_validateSaveEnablement" enabled="true" visible="true" value="{ path: 'Confidential', type: 'sap.ui.model.odata.type.String' , constraints:{ maxLength:1 } }"/>
+					<Label text="Location Name" required="false"/>
+					<Input name="Location Name" id="LocationName_id" valueLiveUpdate="true" liveChange="_validateSaveEnablement" enabled="true" visible="true" value="{ path: 'YY1_Projectlocation_Cpr', type: 'sap.ui.model.odata.type.String' , constraints:{ maxLength:40 } }"/>
 				</f:content>
 			</f:SimpleForm>
 		</semantic:content>

@@ -11,6 +11,7 @@
 				<layout:VerticalLayout class="sapUiMediumMarginEnd">
 					<ObjectAttribute title="Project Name" text="{ProjectName}"/>
 					<ObjectAttribute title="Cost Center" text="{CostCenter}"/>
+					<ObjectAttribute title="Project Location" text="{YY1_Projectlocation_Cpr}"/>
 				</layout:VerticalLayout>
 			</layout:HorizontalLayout>
 		</sap.f.semantic:headerContent>

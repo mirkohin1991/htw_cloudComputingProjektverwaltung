@@ -88,22 +88,6 @@ sap.ui.define([
 
 			//	var ProjManagerExtId_id = sap.ui.getCore().byId("__xmlview0--ProjManagerExtId_id").getProperty("value");
 
-			//SAMPLE DATA
-			/*	
-			"ProjManagerExtId": D063538
-			"ProjectStage": P001
-			"Customer": 10100002			
-			"CostCenter": 0010101902
-			"ProfitCenter": YB101
-			"ProjectCategory": C
-			"Currency": EUR
-			"OrgID": 1010
-				
-			to be changed:
-			"ProjectID": API3
-			"ProjectName": ProjectAPI3
-			*/
-
 			/********* 
 			 * 1. API CALL:  The app has to determine the source language of the provided text
 			 **********/
@@ -358,7 +342,6 @@ sap.ui.define([
 		 * @param event: object containing the event information (most importantly the HTTP result)
 		 */
 		_eventListenerLangDetection: function (event) {
-			//if (this.readyState === 4) {
 			//We have to check for the readyState 4, meanining that this is the response event
 			if (event.currentTarget.readyState === 4) {
 				//First we have to parse the response into JSON format
@@ -388,12 +371,11 @@ sap.ui.define([
 						}]
 					});
 
-
 					//Create a new HTTP request
 					var httpRequest = new XMLHttpRequest();
 					httpRequest.withCredentials = true;
 					//add an event listener so that we can react on the result of the translation service
-					httpRequest.addEventListener("readystatechange", this._eventListenerTranslation);
+					httpRequest.addEventListener("readystatechange", this._eventListenerTranslation.bind(this));
 					//Open the connection to the service. The following relative path '/mlServices' is mapped in the destinations area of the cloud platfom to absolute path 
 					//'https://sandbox.api.sap.com/ml'. In the neo-app.json file the link between the app and the cloud platform destination is maintained.
 					httpRequest.open("POST", "/mlServices/translation/translation");
@@ -409,25 +391,59 @@ sap.ui.define([
 		/**
 		 * Event Listener for the result handling of the translation machine learning service
 		 */
-		_eventListenerTranslation: function () {
+		_eventListenerTranslation: function (event) {
 			//We have to check for the readyState 4, meanining that this is the response event
-			if (this.readyState === 4) {
-				var parsedResponse = JSON.parse(this.responseText);
+			//if (this.readyState === 4) {
+			if (event.currentTarget.readyState === 4) {
+				var parsedResponse = JSON.parse(event.currentTarget.responseText);
 				//In case of an error, an error popup is shown
 				if (parsedResponse.hasOwnProperty('error')) {
 					var errorMessage = parsedResponse.error.message;
 					sap.m.MessageBox.show(errorMessage);
 					// Check whether the response contains the expected element
 				} else if (parsedResponse.hasOwnProperty('units')) {
-					/********* 
-					 * 3. API CALL: Create a new project including the translated text in S/4HANA
-					 **********/
 					//Store the translated text
 					var translatedText = parsedResponse.units[0].translations[0].value;
 					//Display the text on the UI
 					sap.m.MessageToast.show(translatedText);
+					//update the view information with the translated project name
+					sap.ui.getCore().byId("__xmlview0--ProjectName_id").setProperty("value", translatedText);
+					
+					/********* 
+					 * 4. API CALL: Call the google maps location API to get all details of the entered project location
+					 **********/
+					//Create a new HTTP request
+					var httpRequest = new XMLHttpRequest();
+					//add an event listener so that we can react on the result of the location service
+					httpRequest.addEventListener("readystatechange", this._eventListenerLocation);
+					//get the project location, for which the address shall be retriebed
+					var projDescr = sap.ui.getCore().byId("__xmlview0--LocationName_id").getProperty("value");
+				    //The following relative path '/googlemaps' is mapped in the destinations area of the cloud platfom to absolute path 
+				    //'https://maps.googleapis.com/maps/api/'. In the neo-app.json file the link between the app and the cloud platform destination is maintained.
+					var url = "/googlemaps/place/findplacefromtext/json?input=" + projDescr + "&inputtype=textquery&fields=formatted_address,name,geometry&key=AIzaSyC3C0B0CBXeYtnyW3VZL2O9R48yphR3S1c";
+					httpRequest.open("GET", url );
+					httpRequest.send();
 
-					//For the final API call to create the project we want to make us of an OData model as the backend call is OData based
+				}
+			}
+		},
+		_eventListenerLocation: function () {
+			//We have to check for the readyState 4, meanining that this is the response event
+			if (this.readyState === 4) {
+				var locationDetails;
+				var parsedResponse = JSON.parse(event.currentTarget.responseText);
+				//In case of an error, an error popup is shown
+				if (parsedResponse.hasOwnProperty('error')) {
+					var errorMessage = parsedResponse.error.message;
+					sap.m.MessageBox.show(errorMessage);
+					// Check whether the response contains the expected element
+				} else if (parsedResponse.hasOwnProperty('candidates')) {
+						var projDescr = sap.ui.getCore().byId("__xmlview0--ProjectDesc_id").getProperty("value");
+						locationDetails = projDescr + ", " + parsedResponse.candidates[0].formatted_address;
+				}
+			
+			//Call translation service, not depending on the success
+			//For the final API call to create the project we want to make us of an OData model as the backend call is OData based
 					var oModelNew = new sap.ui.model.odata.ODataModel("/S4HC/sap/opu/odata/cpd/SC_PROJ_ENGMT_CREATE_UPD_SRV/", true);
 
 					//For the date fields we have to do an additional transformation into the ISO format and shorten int
@@ -447,14 +463,16 @@ sap.ui.define([
 						"Customer": sap.ui.getCore().byId("__xmlview0--Customer_id").getProperty("value"),
 						"Currency": sap.ui.getCore().byId("__xmlview0--Currency_id").getProperty("value"),
 						"ProjectID": sap.ui.getCore().byId("__xmlview0--ProjectID_id").getProperty("value"),
-						"ProjectName": translatedText, // Here the translated text is insert.
+						//The project name is now translated
+						"ProjectName": sap.ui.getCore().byId("__xmlview0--ProjectName_id").getProperty("value"),
 						"ProjectStage": sap.ui.getCore().byId("__xmlview0--ProjectStage_id").getProperty("value"),
 						"ProjManagerExtId": sap.ui.getCore().byId("__xmlview0--ProjManagerExtId_id").getProperty("value"),
 						"StartDate": dateFromShort, //transformed from date
-						"EndDate": dateToShort //transformed to date
+						"EndDate": dateToShort, //transformed to date
+						"YY1_Projectlocation_Cpr": locationDetails
 					};
 
-					/**var jsonBodyStatic =   {
+					var jsonBodyStatic =   {
 						"ProjectCategory": "C",
 						"OrgID": "1010",
 						"CostCenter": "0010101902",
@@ -466,11 +484,12 @@ sap.ui.define([
 						"ProjectStage": "P001",
 						"ProjManagerExtId":"D063538",
 						"StartDate": dateFromShort, //transformed from date
-						"EndDate": dateToShort //transformed to date
-					}; */
+						"EndDate": dateToShort, //transformed to date
+						"YY1_Projectlocation_Cpr": "Inhalt für Kundenfeld"
+					}; 
 
 					//Now we finally fire the OData-based HTTP POST request.
-					oModelNew.create("/ProjectSet", jsonBody, {
+					oModelNew.create("/ProjectSet", jsonBodyStatic, {
 						success: function (oCreatedEntry) {
 							sap.m.MessageToast.show("Creation successful, ID" + oCreatedEntry.ProjectID);
 
@@ -497,13 +516,7 @@ sap.ui.define([
 							sap.m.MessageBox.show(JSON.parse(oError.response.body).error.message.value);
 						}
 					});
-
-				}
-
 			}
-
 		}
-
 	});
-
 });

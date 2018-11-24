@@ -51,7 +51,15 @@
         "name": "mlServices"
       },
       "description": "mlServices"
+    },
+    { "path": "/googlemaps",
+      "target": {
+        "type": "destination",
+        "name": "googlemaps"
+      },
+      "description": "googlemaps"
     }
+    
   ],
   "welcomeFile": "/webapp/test/flpSandbox.html",
   "sendWelcomeFileRedirect": true
