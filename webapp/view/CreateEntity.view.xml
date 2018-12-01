@@ -10,13 +10,13 @@
 					<Input name="ProjectName" id="ProjectName_id" valueLiveUpdate="true" liveChange="_validateSaveEnablement" enabled="true" visible="true" value="{ path: 'ProjectName', type: 'sap.ui.model.odata.type.String' , constraints:{ maxLength:40 } }"/>
 					<Label text="Location Name" required="true"/>
 					<Input name="Location Name" id="LocationName_id" valueLiveUpdate="true" liveChange="_validateSaveEnablement" enabled="true" visible="true" value="{ path: 'YY1_Projectlocation_Cpr', type: 'sap.ui.model.odata.type.String' , constraints:{ maxLength:40 } }"/>
+					<Label text="Customer ID" required="true"/>
+					<Input name="Customer" id="Customer_id" valueLiveUpdate="true" liveChange="_validateSaveEnablement" enabled="{= ${viewModel>/mode} === 'edit'? false: true}" visible="true" value="{ path: 'Customer', type: 'sap.ui.model.odata.type.String' , constraints:{ maxLength:10 } }"/>
 					<Label text="Start Date" required="true"/>
 					<DatePicker name="StartDate" value="{ path: 'StartDate', type: 'sap.ui.model.type.DateTime'}" id="StartDate_id" visible="true"/>
 					<Label text="End Date" required="true"/>
 					<DatePicker name="EndDate" value="{ path: 'EndDate', type: 'sap.ui.model.type.DateTime'}" id="EndDate_id" enabled="true" visible="true"/>
 					<core:Title text="Your Prefilled Default Values" />
-					<Label text="Customer ID" required="true"/>
-					<Input name="Customer" id="Customer_id" valueLiveUpdate="true" liveChange="_validateSaveEnablement" enabled="{= ${viewModel>/mode} === 'edit'? false: true}" visible="true" value="{ path: 'Customer', type: 'sap.ui.model.odata.type.String' , constraints:{ maxLength:10 } }"/>
 					<Label text="Project Cost Center ID" required="true"/>
 					<Input name="CostCenter" id="CostCenter_id" valueLiveUpdate="true" liveChange="_validateSaveEnablement" enabled="{= ${viewModel>/mode} === 'edit'? false: true}" visible="true" value="{ path: 'CostCenter', type: 'sap.ui.model.odata.type.String' , constraints:{ maxLength:20 } }"/>
 					<Label text="Profit Center ID" required="true"/>
