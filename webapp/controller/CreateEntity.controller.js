@@ -462,26 +462,8 @@ sap.ui.define([
 						"ProjManagerExtId": sap.ui.getCore().byId("__xmlview0--ProjManagerExtId_id").getProperty("value"),
 						"StartDate": dateFromShort, //transformed from date
 						"EndDate": dateToShort, //transformed to date
-						//Commented until Hoangs increases the field length in S/4:
-						//"YY1_Projectlocation_Cpr": locationDetails
-						"YY1_Projectlocation_Cpr": "Test Location"
+						"YY1_Projectlocation_Cpr": locationDetails
 					};
-
-					var jsonBodyStatic =   {
-						"ProjectCategory": "C",
-						"OrgID": "1010",
-						"CostCenter": "0010101902",
-						"ProfitCenter": "YB101",
-						"Customer": "10100002",
-						"Currency": "EUR",
-						"ProjectID": sap.ui.getCore().byId("__xmlview0--ProjectID_id").getProperty("value"),
-						"ProjectName": "A Mirko NEU", // Here the translated text is insert.
-						"ProjectStage": "P001",
-						"ProjManagerExtId":"D063538",
-						"StartDate": dateFromShort, //transformed from date
-						"EndDate": dateToShort, //transformed to date
-						"YY1_Projectlocation_Cpr": "Inhalt für Kundenfeld"
-					}; 
 
 					//Now we finally fire the OData-based HTTP POST request.
 					oModelNew.create("/ProjectSet", jsonBody, {
