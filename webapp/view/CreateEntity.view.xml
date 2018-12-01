@@ -1,34 +1,20 @@
 <mvc:View xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form" xmlns:footerbar="sap.ushell.ui.footerbar" xmlns:l="sap.ui.layout" xmlns:mvc="sap.ui.core.mvc" xmlns:semantic="sap.m.semantic" xmlns:smart="sap.ui.comp.smartfield" xmlns="sap.m" controllerName="hoang.com.CreateProjects.controller.CreateEntity">
 	<semantic:DetailPage id="page" navButtonPress="onNavBack" title="{viewModel>/viewTitle}" busy="{viewModel>/busy}">
 		<semantic:content>
-			<f:SimpleForm class="editableForm" columnsL="1" columnsM="1" editable="true" emptySpanL="4" emptySpanM="4" id="newEntitySimpleForm" labelSpanL="3" labelSpanM="3" layout="ResponsiveGridLayout" maxContainerCols="2" minWidth="1024" title="{= ${viewModel>/mode} === 'edit'? 'Edit Project': 'New Project'}">
+			<f:SimpleForm class="editableForm" columnsL="1" columnsM="1" editable="true" emptySpanL="4" emptySpanM="4" id="newEntitySimpleForm" labelSpanL="3" labelSpanM="3" layout="ResponsiveGridLayout" maxContainerCols="2" minWidth="1024">
 				<f:content>
-					<Label text="Project Manager's Company Code"/>
-					<Input name="ProjManagerCompCode" id="ProjManagerCompCode_id" valueLiveUpdate="true" liveChange="_validateSaveEnablement" enabled="true" visible="true" value="{ path: 'ProjManagerCompCode', type: 'sap.ui.model.odata.type.String' , constraints:{ maxLength:4, nullable:false } }"/>
-					<Label text="Project Accountant's Company Code"/>
-					<Input name="ProjAccountantCompCode" id="ProjAccountantCompCode_id" valueLiveUpdate="true" liveChange="_validateSaveEnablement" enabled="true" visible="true" value="{ path: 'ProjAccountantCompCode', type: 'sap.ui.model.odata.type.String' , constraints:{ maxLength:4, nullable:false } }"/>
+					<core:Title text="Project Information" />
 					<Label text="Project ID" required="true"/>
 					<Input name="ProjectID" id="ProjectID_id" valueLiveUpdate="true" liveChange="_validateSaveEnablement" enabled="{= ${viewModel>/mode} === 'edit'? false: true}" visible="true" value="{ path: 'ProjectID', type: 'sap.ui.model.odata.type.String' , constraints:{ maxLength:40, nullable:false } }"/>
-					<Label text="Project Controller's Company Code"/>
-					<Input name="ProjControllerCompCode" id="ProjControllerCompCode_id" valueLiveUpdate="true" liveChange="_validateSaveEnablement" enabled="true" visible="true" value="{ path: 'ProjControllerCompCode', type: 'sap.ui.model.odata.type.String' , constraints:{ maxLength:4, nullable:false } }"/>
-					<Label text="Project Manager ID" required="true"/>
-					<Input name="ProjManagerExtId" id="ProjManagerExtId_id" valueLiveUpdate="true" liveChange="_validateSaveEnablement" enabled="true" visible="true" value="{ path: 'ProjManagerExtId', type: 'sap.ui.model.odata.type.String' , constraints:{ maxLength:38 } }"/>
 					<Label text="Project Name" required="true"/>
 					<Input name="ProjectName" id="ProjectName_id" valueLiveUpdate="true" liveChange="_validateSaveEnablement" enabled="true" visible="true" value="{ path: 'ProjectName', type: 'sap.ui.model.odata.type.String' , constraints:{ maxLength:40 } }"/>
-					<Label text="Project Partner's Company Code"/>
-					<Input name="ProjPartnerCompCode" id="ProjPartnerCompCode_id" valueLiveUpdate="true" liveChange="_validateSaveEnablement" enabled="true" visible="true" value="{ path: 'ProjPartnerCompCode', type: 'sap.ui.model.odata.type.String' , constraints:{ maxLength:4, nullable:false } }"/>
-					<Label text="Project Accountant ID" required="false"/>
-					<Input name="ProjAccountantExtId" id="ProjAccountantExtId_id" valueLiveUpdate="true" liveChange="_validateSaveEnablement" enabled="true" visible="true" value="{ path: 'ProjAccountantExtId', type: 'sap.ui.model.odata.type.String' , constraints:{ maxLength:38 } }"/>
-					<Label text="Stage ID" required="true"/>
-					<Input name="ProjectStage" id="ProjectStage_id" valueLiveUpdate="true" liveChange="_validateSaveEnablement" enabled="{= ${viewModel>/mode} === 'edit'? false: true}" visible="true" value="{ path: 'ProjectStage', type: 'sap.ui.model.odata.type.String' , constraints:{ maxLength:4 } }"/>
-					<Label text="Project Controller ID" required="false"/>
-					<Input name="ProjControllerExtId" id="ProjControllerExtId_id" valueLiveUpdate="true" liveChange="_validateSaveEnablement" enabled="true" visible="true" value="{ path: 'ProjControllerExtId', type: 'sap.ui.model.odata.type.String' , constraints:{ maxLength:38 } }"/>
-					<Label text="Project Partner ID" required="false"/>
-					<Input name="ProjPartnerExtId" id="ProjPartnerExtId_id" valueLiveUpdate="true" liveChange="_validateSaveEnablement" enabled="true" visible="true" value="{ path: 'ProjPartnerExtId', type: 'sap.ui.model.odata.type.String' , constraints:{ maxLength:38 } }"/>
+					<Label text="Location Name" required="true"/>
+					<Input name="Location Name" id="LocationName_id" valueLiveUpdate="true" liveChange="_validateSaveEnablement" enabled="true" visible="true" value="{ path: 'YY1_Projectlocation_Cpr', type: 'sap.ui.model.odata.type.String' , constraints:{ maxLength:40 } }"/>
 					<Label text="Start Date" required="true"/>
-					<DatePicker name="StartDate" value="{ path: 'StartDate', type: 'sap.ui.model.type.DateTime'}" id="StartDate_id" type="DateTime" visible="true"/>
+					<DatePicker name="StartDate" value="{ path: 'StartDate', type: 'sap.ui.model.type.DateTime'}" id="StartDate_id" visible="true"/>
 					<Label text="End Date" required="true"/>
-					<DatePicker name="EndDate" value="{ path: 'EndDate', type: 'sap.ui.model.type.DateTime'}" id="EndDate_id" type="DateTime" enabled="true" visible="true"/>
+					<DatePicker name="EndDate" value="{ path: 'EndDate', type: 'sap.ui.model.type.DateTime'}" id="EndDate_id" enabled="true" visible="true"/>
+					<core:Title text="Your Prefilled Default Values" />
 					<Label text="Customer ID" required="true"/>
 					<Input name="Customer" id="Customer_id" valueLiveUpdate="true" liveChange="_validateSaveEnablement" enabled="{= ${viewModel>/mode} === 'edit'? false: true}" visible="true" value="{ path: 'Customer', type: 'sap.ui.model.odata.type.String' , constraints:{ maxLength:10 } }"/>
 					<Label text="Project Cost Center ID" required="true"/>
@@ -41,12 +27,12 @@
 					<Input name="Currency" id="Currency_id" valueLiveUpdate="true" liveChange="_validateSaveEnablement" enabled="true" visible="true" value="{ path: 'Currency', type: 'sap.ui.model.odata.type.String' , constraints:{ maxLength:5 } }"/>
 					<Label text="Service Organization ID" required="true"/>
 					<Input name="OrgID" id="OrgID_id" valueLiveUpdate="true" liveChange="_validateSaveEnablement" enabled="{= ${viewModel>/mode} === 'edit'? false: true}" visible="true" value="{ path: 'OrgID', type: 'sap.ui.model.odata.type.String' , constraints:{ maxLength:5 } }"/>
-					<Label text="Confidential" required="false"/>
-					<Input name="Confidential" id="Confidential_id" valueLiveUpdate="true" liveChange="_validateSaveEnablement" enabled="true" visible="true" value="{ path: 'Confidential', type: 'sap.ui.model.odata.type.String' , constraints:{ maxLength:1 } }"/>
-					<Label text="Location Name" required="false"/>
-					<Input name="Location Name" id="LocationName_id" valueLiveUpdate="true" liveChange="_validateSaveEnablement" enabled="true" visible="true" value="{ path: 'YY1_Projectlocation_Cpr', type: 'sap.ui.model.odata.type.String' , constraints:{ maxLength:40 } }"/>
-				</f:content>
-			</f:SimpleForm>
+					<Label text="Project Controller's Company Code" required="true"/>
+					<Input name="ProjManagerExtId" id="ProjManagerExtId_id" valueLiveUpdate="true" liveChange="_validateSaveEnablement" enabled="true" visible="true" value="{ path: 'ProjManagerExtId', type: 'sap.ui.model.odata.type.String' , constraints:{ maxLength:38 } }"/>
+		    		<Label text="Stage ID" required="true"/>
+					<Input name="ProjectStage" id="ProjectStage_id" valueLiveUpdate="true" liveChange="_validateSaveEnablement" enabled="{= ${viewModel>/mode} === 'edit'? false: true}" visible="true" value="{ path: 'ProjectStage', type: 'sap.ui.model.odata.type.String' , constraints:{ maxLength:4 } }"/>
+		    		</f:content>
+		    </f:SimpleForm>
 		</semantic:content>
 		<semantic:saveAction>
 			<semantic:SaveAction id="save" enabled="{viewModel>/enableCreate}" press="onSave"/>

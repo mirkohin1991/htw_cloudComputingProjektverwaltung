@@ -66,28 +66,6 @@ sap.ui.define([
 				return;
 			}
 
-			//	this.getModel("appView").setProperty("/busy", true);
-			//	if (this._oViewModel.getProperty("/mode") === "edit") {
-			//		// attach to the request completed event of the batch
-			//		oModel.attachEventOnce("batchRequestCompleted", function (oEvent) {
-			//			if (that._checkIfBatchRequestSucceeded(oEvent)) {
-			//				that._fnUpdateSuccess();
-			//			} else {
-			//				that._fnEntityCreationFailed();
-			//				MessageBox.error(that._oResourceBundle.getText("updateError"));
-			//			}
-			//		});
-			//	}
-			//	oModel.submitChanges();
-
-			//oModel.resetChanges();
-			//	oModel.refresh();
-			//	this.getRouter().navTo("object", { ProjectID: "CP0001"}, true);
-			//sap.ui.getCore().byId("application-CreateProjects-display-component---master").getController().onSelectionChange();
-			//		return;
-
-			//	var ProjManagerExtId_id = sap.ui.getCore().byId("__xmlview0--ProjManagerExtId_id").getProperty("value");
-
 			/********* 
 			 * 1. API CALL:  The app has to determine the source language of the provided text
 			 **********/
@@ -336,6 +314,19 @@ sap.ui.define([
 			}
 			return aControls;
 		},
+		
+		onBeforeRendering: function () {
+		//Set the default values	
+		sap.ui.getCore().byId("__xmlview0--ProjectCategory_id").setValue("C");
+		sap.ui.getCore().byId("__xmlview0--OrgID_id").setValue("1010");
+		sap.ui.getCore().byId("__xmlview0--CostCenter_id").setValue("0010101902");
+		sap.ui.getCore().byId("__xmlview0--ProfitCenter_id").setValue("YB101");
+		sap.ui.getCore().byId("__xmlview0--Customer_id").setValue("10100002");
+		sap.ui.getCore().byId("__xmlview0--Currency_id").setValue("EUR");
+						//The project name is now translated
+		sap.ui.getCore().byId("__xmlview0--ProjectStage_id").setValue("P001");
+		sap.ui.getCore().byId("__xmlview0--ProjManagerExtId_id").setValue("D063538");
+		},
 
 		/**
 		 * Event Listener for the result handling of the language detection machine learning service
@@ -353,7 +344,7 @@ sap.ui.define([
 					//Check if the response contains the expected information	
 				} else if (parsedResponse.hasOwnProperty("langCode")) {
 					/********* 
-					 * 2. API CALL: Text translation into english
+					 * 3. API CALL: Text translation into english
 					 **********/
 					//Store the detected language
 					var langCode = parsedResponse.langCode;
@@ -433,20 +424,22 @@ sap.ui.define([
 				var locationDetails;
 				var parsedResponse = JSON.parse(event.currentTarget.responseText);
 				//In case of an error, an error popup is shown
-				if (parsedResponse.hasOwnProperty('error')) {
+				if (parsedResponse.status === "INVALID_REQUEST") {
 					var errorMessage = parsedResponse.error.message;
 					sap.m.MessageBox.show(errorMessage);
 					// Check whether the response contains the expected element
 				} else if (parsedResponse.hasOwnProperty('candidates')) {
-						var projDescr = sap.ui.getCore().byId("__xmlview0--ProjectDesc_id").getProperty("value");
+						var projDescr = sap.ui.getCore().byId("__xmlview0--LocationName_id").getProperty("value");
 						locationDetails = projDescr + ", " + parsedResponse.candidates[0].formatted_address;
 				}
 			
-			//Call translation service, not depending on the success
-			//For the final API call to create the project we want to make us of an OData model as the backend call is OData based
+					/********* 
+					 * 5. API CALL: Finally call the S/4HANA Cloud OData-service to create the project
+					 **********/
+					//For the final API call to create the project we want to make us of an OData model as the backend call is OData based
 					var oModelNew = new sap.ui.model.odata.ODataModel("/S4HC/sap/opu/odata/cpd/SC_PROJ_ENGMT_CREATE_UPD_SRV/", true);
 
-					//For the date fields we have to do an additional transformation into the ISO format and shorten int
+					//For the date fields we have to do an additional transformation into the ISO format and shorten it
 					var dateFrom = sap.ui.getCore().byId("__xmlview0--StartDate_id").getProperty("value");
 					var dateFromISO = new Date(dateFrom).toISOString();
 					var dateFromShort = dateFromISO.split(".")[0];
@@ -469,7 +462,9 @@ sap.ui.define([
 						"ProjManagerExtId": sap.ui.getCore().byId("__xmlview0--ProjManagerExtId_id").getProperty("value"),
 						"StartDate": dateFromShort, //transformed from date
 						"EndDate": dateToShort, //transformed to date
-						"YY1_Projectlocation_Cpr": locationDetails
+						//Commented until Hoangs increases the field length in S/4:
+						//"YY1_Projectlocation_Cpr": locationDetails
+						"YY1_Projectlocation_Cpr": "Test Location"
 					};
 
 					var jsonBodyStatic =   {
@@ -489,7 +484,7 @@ sap.ui.define([
 					}; 
 
 					//Now we finally fire the OData-based HTTP POST request.
-					oModelNew.create("/ProjectSet", jsonBodyStatic, {
+					oModelNew.create("/ProjectSet", jsonBody, {
 						success: function (oCreatedEntry) {
 							sap.m.MessageToast.show("Creation successful, ID" + oCreatedEntry.ProjectID);
 
@@ -497,7 +492,6 @@ sap.ui.define([
 							var oMasterModel = sap.ui.getCore().byId("application-CreateProjects-display-component---master").getModel();
 							var oAppViewModel = sap.ui.getCore().byId("application-CreateProjects-display-component---master").getModel("appView");
 							var oMasterController = sap.ui.getCore().byId("application-CreateProjects-display-component---master").getController();
-
 							//gcreate a new project key for the model and store the path
 							var sObjectPath = oMasterModel.createKey("ProjectSet", oCreatedEntry);
 							//update the application view model with the new project path so that we can automatically open it after the creation
