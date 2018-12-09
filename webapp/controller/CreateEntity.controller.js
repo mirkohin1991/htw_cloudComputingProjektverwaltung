@@ -67,7 +67,7 @@ sap.ui.define([
 			}
 
 			/********* 
-			 * 1. API CALL:  The app has to determine the source language of the provided text
+			 * 2. API CALL:  The app has to determine the source language of the provided text
 			 **********/
 			//Get the user input for the project name
 			var httpBody = JSON.stringify({
@@ -78,10 +78,11 @@ sap.ui.define([
 			httpRequest.withCredentials = true;
 			//add an event listener so that we can react on the result
 			httpRequest.addEventListener("readystatechange", this._eventListenerLangDetection.bind(this));
-			//Open the connection to the service. The following relative path '/mlServices' is mapped in the destinations area of the cloud platfom to absolute path 
-			//'https://sandbox.api.sap.com/ml'. In the neo-app.json file the link between the app and the cloud platform destination is maintained.
+			//Open the connection to the service. The following relative path '/mlServices' is mapped in the destinations area 
+			//of the cloud platfom to absolute path 'https://sandbox.api.sap.com/ml'. 
+			//In the neo-app.json file the link between the app and the cloud platform destination is maintained.
 			httpRequest.open("POST", "/mlServices/languagedetection/language");
-			//The content is requested in the JSON format. Additonally the API requires a unique key
+			//The content is requested in the JSON format. Additonally the API requires an unique API key for the authentication
 			httpRequest.setRequestHeader("Content-Type", "application/json");
 			httpRequest.setRequestHeader("apikey", "bIz3xKOCcyoGpHucikNb5kr1CvWT7Bvh");
 			//Finally the http request is fired
@@ -357,20 +358,21 @@ sap.ui.define([
 							"en"
 						],
 						"units": [{
-							"value": sap.ui.getCore().byId("__xmlview0--ProjectName_id").getProperty("value"), //This is the information that the user has entered on the UI
+							//This is the information that the user has entered on the UI
+							"value": sap.ui.getCore().byId("__xmlview0--ProjectName_id").getProperty("value"),
 							"key": "PROJECT_TRANSL"
 						}]
 					});
-
 					//Create a new HTTP request
 					var httpRequest = new XMLHttpRequest();
 					httpRequest.withCredentials = true;
 					//add an event listener so that we can react on the result of the translation service
 					httpRequest.addEventListener("readystatechange", this._eventListenerTranslation.bind(this));
-					//Open the connection to the service. The following relative path '/mlServices' is mapped in the destinations area of the cloud platfom to absolute path 
-					//'https://sandbox.api.sap.com/ml'. In the neo-app.json file the link between the app and the cloud platform destination is maintained.
+					//Open the connection to the service. The following relative path '/mlServices' is mapped in the destinations area
+					//of the cloud platfom to absolute path 'https://sandbox.api.sap.com/ml'. 
+					//In the neo-app.json file the link between the app and the cloud platform destination is maintained.
 					httpRequest.open("POST", "/mlServices/translation/translation");
-					//The content is requested in the JSON format. Additonally the API requires a unique key
+					//The content is requested in the JSON format. Additonally the API requires a unique key for the authentication
 					httpRequest.setRequestHeader("Content-Type", "application/json");
 					httpRequest.setRequestHeader("apikey", "bIz3xKOCcyoGpHucikNb5kr1CvWT7Bvh");
 					//Finally the http request is fired
@@ -410,8 +412,10 @@ sap.ui.define([
 					//get the project location, for which the address shall be retriebed
 					var projDescr = sap.ui.getCore().byId("__xmlview0--LocationName_id").getProperty("value");
 				    //The following relative path '/googlemaps' is mapped in the destinations area of the cloud platfom to absolute path 
-				    //'https://maps.googleapis.com/maps/api/'. In the neo-app.json file the link between the app and the cloud platform destination is maintained.
-					var url = "/googlemaps/place/findplacefromtext/json?input=" + projDescr + "&inputtype=textquery&fields=formatted_address,name,geometry&key=AIzaSyC3C0B0CBXeYtnyW3VZL2O9R48yphR3S1c";
+				    //'https://maps.googleapis.com/maps/api/'. In the neo-app.json file the link between the app 
+				    //and the cloud platform destination is maintained.
+					var url = "/googlemaps/place/findplacefromtext/json?input=" + projDescr 
+					+ "&inputtype=textquery&fields=formatted_address,name,geometry&key=AIzaSyC3C0B0CBXeYtnyW3VZL2O9R48yphR3S1c";
 					httpRequest.open("GET", url );
 					httpRequest.send();
 
