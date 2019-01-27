@@ -84,7 +84,7 @@ sap.ui.define([
 			httpRequest.open("POST", "/mlServices/languagedetection/language");
 			//The content is requested in the JSON format. Additonally the API requires an unique API key for the authentication
 			httpRequest.setRequestHeader("Content-Type", "application/json");
-			httpRequest.setRequestHeader("apikey", "bIz3xKOCcyoGpHucikNb5kr1CvWT7Bvh");
+			httpRequest.setRequestHeader("apikey", "XXX");
 			//Finally the http request is fired
 			httpRequest.send(httpBody);
 
@@ -374,7 +374,7 @@ sap.ui.define([
 					httpRequest.open("POST", "/mlServices/translation/translation");
 					//The content is requested in the JSON format. Additonally the API requires a unique key for the authentication
 					httpRequest.setRequestHeader("Content-Type", "application/json");
-					httpRequest.setRequestHeader("apikey", "bIz3xKOCcyoGpHucikNb5kr1CvWT7Bvh");
+					httpRequest.setRequestHeader("apikey", "XXX");
 					//Finally the http request is fired
 					httpRequest.send(data);
 				}
@@ -415,7 +415,7 @@ sap.ui.define([
 				    //'https://maps.googleapis.com/maps/api/'. In the neo-app.json file the link between the app 
 				    //and the cloud platform destination is maintained.
 					var url = "/googlemaps/place/findplacefromtext/json?input=" + projDescr 
-					+ "&inputtype=textquery&fields=formatted_address,name,geometry&key=AIzaSyC3C0B0CBXeYtnyW3VZL2O9R48yphR3S1c";
+					+ "&inputtype=textquery&fields=formatted_address,name,geometry&key=XXX";
 					httpRequest.open("GET", url );
 					httpRequest.send();
 
